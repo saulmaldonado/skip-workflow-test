@@ -1,0 +1,11 @@
+name: skip-workflow
+author: saulmaldonado
+description: 'skip workflow based on commit message(s) pull requests'
+inputs:
+  string:
+    description: 'string to search for in commit message(s)'
+    required: false
+    default: 'docs'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

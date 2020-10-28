@@ -1,0 +1,29 @@
+{
+  "name": "skip-workflow",
+  "version": "1.0.0",
+  "description": "Github Action: skip workflow based on commit message(s) pull requests ",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack"
+  },
+  "author": "Saul Maldonado <samaldonado4@gmail.com> (https://saulmaldonado.tech)",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/github": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.6",
+    "@types/webpack": "^4.41.24",
+    "@typescript-eslint/eslint-plugin": "^4.6.0",
+    "@typescript-eslint/parser": "^4.6.0",
+    "eslint": "^7.12.1",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "prettier": "^2.1.2",
+    "ts-loader": "^8.0.7",
+    "typescript": "^4.0.5",
+    "webpack": "^5.3.0",
+    "webpack-cli": "^4.1.0"
+  }
+}
