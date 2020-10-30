@@ -3,8 +3,7 @@ import { green, red } from 'chalk';
 import { getCommitMessages } from './lib/getCommitMessages';
 import { searchCommitMessages } from './lib/searchCommitMessages';
 import { skipWorkflow } from './lib/skipWorkflow';
-
-const PHRASE_TO_FIND_INPUT_ID: string = 'phrase';
+import { actionConfig } from './config';
 
 type Run = (inputId: string) => Promise<void>;
 const run: Run = async (inputId) => {
@@ -33,4 +32,4 @@ const run: Run = async (inputId) => {
   }
 };
 
-run(PHRASE_TO_FIND_INPUT_ID);
+run(actionConfig.PHRASE_TO_FIND_INPUT_ID);

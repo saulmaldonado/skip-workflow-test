@@ -1,5 +1,6 @@
 import { getInput } from '@actions/core';
 import { context, getOctokit } from '@actions/github';
+import { actionConfig } from '../config';
 import { getPrId } from './actionContext';
 
 type GithubPRCommitMessagesResponse = {
@@ -11,6 +12,8 @@ type GithubPRCommitMessagesResponse = {
     };
   };
 };
+
+const { GITHUB_TOKEN_ID } = actionConfig;
 
 const COMMIT_MESSAGES_QUERY = `
 query($repoOwner: String!, $repoName: String!, $prId: Int!) {
@@ -32,7 +35,7 @@ type GetCommitMessages = () => Promise<string[] | never>;
 
 export const getCommitMessages: GetCommitMessages = async () => {
   try {
-    const octokit = getOctokit(getInput('GITHUB_TOKEN'));
+    const octokit = getOctokit(getInput(GITHUB_TOKEN_ID));
 
     const {
       repo: { owner, repo },
