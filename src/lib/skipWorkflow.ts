@@ -24,7 +24,6 @@ export const skipWorkflow = () => {
     // } = context;
 
     throw new Error();
-
     // return actions.cancelWorkflowRun({ run_id: runId, owner, repo });
   } catch (error) {
     throw new Error('❌ Error skipping workflow');
