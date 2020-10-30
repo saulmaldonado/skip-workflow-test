@@ -37,5 +37,5 @@ const main: Main = async (inputId) => {
 };
 
 (async () => {
-  main(actionConfig.PHRASE_TO_FIND_INPUT_ID);
+  await main(actionConfig.PHRASE_TO_FIND_INPUT_ID);
 })();
