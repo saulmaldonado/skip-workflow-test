@@ -1,10 +1,10 @@
-import { Context } from '@actions/github/lib/context';
+import { context } from '@actions/github';
 
-type GetPrId = (context: Context) => number | never;
-export const getPrId: GetPrId = (context) => {
+type GetPrId = () => number | never;
+export const getPrId: GetPrId = () => {
   const { ref: prRef } = context;
   const prIdRegex: RegExp = /(?<=refs\/pull\/)\d+(?=\/merge)/i;
-  // 'refs/pull/:prNumber/merge'
+
   const [prId] = prIdRegex.exec(prRef) ?? [];
   if (!prId) {
     throw new Error(
@@ -14,5 +14,5 @@ export const getPrId: GetPrId = (context) => {
   return Number(prId);
 };
 
-type GetWorkflowRunId = (context: Context) => number;
-export const getWorkflowRunId: GetWorkflowRunId = (context) => context.runId;
+type GetWorkflowRunId = () => number;
+export const getWorkflowRunId: GetWorkflowRunId = () => context.runId;

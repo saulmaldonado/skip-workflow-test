@@ -3,7 +3,7 @@ import { green, red } from 'chalk';
 import { getCommitMessages } from './lib/getCommitMessages';
 import { searchCommitMessages } from './lib/searchCommitMessages';
 import { skipWorkflow } from './lib/skipWorkflow';
-import { actionConfig } from './config/config';
+import { actionConfig } from './config';
 
 type Main = (inputId: string) => Promise<void>;
 const main: Main = async (inputId) => {
@@ -12,7 +12,7 @@ const main: Main = async (inputId) => {
 
     const commitMessages: string[] = await getCommitMessages();
 
-    console.log(`🔎 Searching git commit messages for "${phraseToFind}"...`);
+    console.log(`🔎 Searching all commit messages for "${phraseToFind}"...`);
 
     const foundCommit = searchCommitMessages(commitMessages, phraseToFind);
 

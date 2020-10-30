@@ -1,7 +1,7 @@
 import { getInput } from '@actions/core';
 import { getOctokit, context } from '@actions/github';
 import { OctokitResponse } from '@octokit/types/dist-types/OctokitResponse';
-import { actionConfig } from '../config/config';
+import { actionConfig } from '../config';
 
 import { getWorkflowRunId } from './actionContext';
 
@@ -11,11 +11,11 @@ type SkipWorkflow = () => Promise<OctokitResponse<any> | never>;
 
 export const skipWorkflow: SkipWorkflow = () => {
   try {
-    const GITHUB_TOKEN: string = getInput(GITHUB_TOKEN_ID);
+    const githubToken: string = getInput(GITHUB_TOKEN_ID);
 
-    const runId: number = getWorkflowRunId(context);
+    const runId: number = getWorkflowRunId();
 
-    const { actions } = getOctokit(GITHUB_TOKEN);
+    const { actions } = getOctokit(githubToken);
 
     const {
       repo: { owner, repo },
