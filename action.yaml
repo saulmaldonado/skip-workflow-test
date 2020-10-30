@@ -6,6 +6,9 @@ inputs:
     description: 'string to search for in commit message(s)'
     required: false
     default: 'docs'
+  github-token:
+    description: Github Token
+    required: true
 runs:
   using: 'node12'
   main: 'dist/index.js'
