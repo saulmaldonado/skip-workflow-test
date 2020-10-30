@@ -33,6 +33,7 @@ export const skipWorkflow: SkipWorkflow = async () => {
       conclusion: 'success',
     });
   } catch (error) {
-    throw new Error('❌ Error skipping workflow');
+    // throw new Error('❌ Error skipping workflow');
+    throw new Error(error);
   }
 };
