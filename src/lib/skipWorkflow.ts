@@ -4,7 +4,7 @@ import { OctokitResponse } from '@octokit/types/dist-types/OctokitResponse';
 
 import { getWorkflowRunId } from './actionContext';
 
-const GITHUB_TOKEN_ID = 'GITHUB_TOKEN';
+const GITHUB_TOKEN_ID = 'github-token';
 
 type SkipWorkflow = () => Promise<OctokitResponse<any> | never>;
 
