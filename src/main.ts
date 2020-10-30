@@ -3,10 +3,10 @@ import { green, red } from 'chalk';
 import { getCommitMessages } from './lib/getCommitMessages';
 import { searchCommitMessages } from './lib/searchCommitMessages';
 import { skipWorkflow } from './lib/skipWorkflow';
-import { actionConfig } from './config';
+import { actionConfig } from './config/config';
 
-type Run = (inputId: string) => Promise<void>;
-const run: Run = async (inputId) => {
+type Main = (inputId: string) => Promise<void>;
+const main: Main = async (inputId) => {
   try {
     const phraseToFind: string = getInput(inputId);
 
@@ -19,7 +19,7 @@ const run: Run = async (inputId) => {
     if (foundCommit) {
       console.log(
         green(
-          `🛑 "${phraseToFind}" found in "${foundCommit}". Skipping workflow...`
+          `⏭ "${phraseToFind}" found in "${foundCommit}". Skipping workflow...`
         )
       );
 
@@ -36,4 +36,4 @@ const run: Run = async (inputId) => {
   }
 };
 
-run(actionConfig.PHRASE_TO_FIND_INPUT_ID);
+main(actionConfig.PHRASE_TO_FIND_INPUT_ID);

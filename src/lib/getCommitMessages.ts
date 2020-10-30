@@ -1,6 +1,6 @@
 import { getInput } from '@actions/core';
 import { context, getOctokit } from '@actions/github';
-import { actionConfig } from '../config';
+import { actionConfig } from '../config/config';
 import { getPrId } from './actionContext';
 
 type GithubPRCommitMessagesResponse = {
