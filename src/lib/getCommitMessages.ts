@@ -60,7 +60,9 @@ export const getCommitMessages: GetCommitMessages = async () => {
     return commits.map(({ commit }) => commit.message);
   } catch (error) {
     throw new Error(
-      '❌ Error retrieving commit messages. Make sure you have provided a GITHUB_TOKEN and that you are authorized to access this repo.'
+      error
+      // eslint-disable-next-line max-len
+      // '❌ Error retrieving commit messages. Make sure you have provided a GITHUB_TOKEN and that you are authorized to access this repo.'
     );
   }
 };
