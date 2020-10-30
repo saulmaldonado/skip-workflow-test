@@ -40,7 +40,8 @@ export const getCommitMessages: GetCommitMessages = async () => {
     const {
       repo: { owner, repo },
     } = context;
-    const prId = getPrId(context);
+
+    const prId: number = getPrId(context);
 
     const {
       repository: {

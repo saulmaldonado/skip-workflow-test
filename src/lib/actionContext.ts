@@ -11,7 +11,7 @@ export const getPrId: GetPrId = (context) => {
       '❌ Error finding commit ID. Make sure this workflow is triggered by a "pull_request" event'
     );
   }
-  return prId;
+  return Number(prId);
 };
 
 type GetWorkflowRunId = (context: Context) => number;
