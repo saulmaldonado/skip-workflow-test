@@ -36,4 +36,6 @@ const main: Main = async (inputId) => {
   }
 };
 
-main(actionConfig.PHRASE_TO_FIND_INPUT_ID);
+(async () => {
+  main(actionConfig.PHRASE_TO_FIND_INPUT_ID);
+})();
