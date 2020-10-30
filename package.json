@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack",
-    "test": "echo 'test ran'"
+    "test": "sleep 10"
   },
   "author": "Saul Maldonado <samaldonado4@gmail.com> (https://saulmaldonado.tech)",
   "license": "MIT",
