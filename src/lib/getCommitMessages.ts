@@ -43,6 +43,8 @@ export const getCommitMessages: GetCommitMessages = async () => {
 
     const prId: number = getPrId(context);
 
+    console.log(prId);
+
     const {
       repository: {
         pullRequest: {
