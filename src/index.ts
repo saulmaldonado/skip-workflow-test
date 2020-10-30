@@ -17,14 +17,18 @@ const run: Run = async (inputId) => {
     const foundCommit = searchCommitMessages(commitMessages, phraseToFind);
 
     if (foundCommit) {
-      green(
-        `🛑 "${phraseToFind}" found in "${foundCommit}". Skipping workflow...`
+      console.log(
+        green(
+          `🛑 "${phraseToFind}" found in "${foundCommit}". Skipping workflow...`
+        )
       );
 
       await skipWorkflow();
     } else {
-      green(
-        `✔ "${phraseToFind}" not found in commit messages. Continuing workflow...`
+      console.log(
+        green(
+          `✔ "${phraseToFind}" not found in commit messages. Continuing workflow...`
+        )
       );
     }
   } catch (error) {
