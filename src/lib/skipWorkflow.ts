@@ -15,6 +15,8 @@ export const skipWorkflow: SkipWorkflow = () => {
 
     const runId: number = getWorkflowRunId();
 
+    console.log(runId);
+
     const { actions } = getOctokit(githubToken);
 
     const {
