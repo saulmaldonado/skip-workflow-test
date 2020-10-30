@@ -2,7 +2,7 @@ name: skip-workflow
 author: saulmaldonado
 description: 'skip workflow based on commit message(s) pull requests'
 inputs:
-  string:
+  phrase:
     description: 'string to search for in commit message(s)'
     required: false
     default: 'docs'

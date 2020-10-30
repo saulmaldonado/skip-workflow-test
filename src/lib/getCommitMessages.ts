@@ -1,0 +1,63 @@
+import { getInput } from '@actions/core';
+import { context, getOctokit } from '@actions/github';
+import { getPrId } from './actionContext';
+
+type GithubPRCommitMessagesResponse = {
+  repository: {
+    pullRequest: {
+      commits: {
+        nodes: Array<{ commit: { message: string } }>;
+      };
+    };
+  };
+};
+
+const COMMIT_MESSAGES_QUERY = `
+query($repoOwner: String!, $repoName: String!, $prId: Int!) {
+  repository(owner: $repoOwner, name: $repoName) {
+    pullRequest(number: $prId){
+       commits(first: 250) {
+        nodes {
+          commit {
+            message
+          }
+        }
+      }
+    }
+  }
+}
+`;
+
+type GetCommitMessages = () => Promise<string[] | never>;
+
+export const getCommitMessages: GetCommitMessages = async () => {
+  try {
+    const octokit = getOctokit(getInput('GITHUB_TOKEN'));
+
+    const {
+      repo: { owner, repo },
+    } = context;
+    const prId = getPrId(context);
+
+    const {
+      repository: {
+        pullRequest: {
+          commits: { nodes: commits },
+        },
+      },
+    } = await octokit.graphql<GithubPRCommitMessagesResponse>(
+      COMMIT_MESSAGES_QUERY,
+      {
+        repoOwner: owner,
+        repoName: repo,
+        prId,
+      }
+    );
+
+    return commits.map(({ commit }) => commit.message);
+  } catch (error) {
+    throw new Error(
+      '❌ Error retrieving commit messages. Make sure you have provided a GITHUB_TOKEN and that you are authorized to access this repo.'
+    );
+  }
+};

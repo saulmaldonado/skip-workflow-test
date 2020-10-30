@@ -1,0 +1,12 @@
+on: [push]
+
+jobs:
+  test-action:
+    runs-on: ubuntu-latest
+    name: A job to say hello
+    steps:
+      - uses: actions/checkout@v2
+      - name: test-action
+        uses: ./action.yaml
+        with:
+          phrase: 'docs'
