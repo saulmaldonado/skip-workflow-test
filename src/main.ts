@@ -2,7 +2,7 @@ import { getInput, setFailed } from '@actions/core';
 import { red } from 'chalk';
 import { getCommitMessages } from './lib/getCommitMessages';
 import { searchCommitMessages } from './lib/searchCommitMessages';
-// import { skipWorkflow } from './lib/skipWorkflow';
+import { skipWorkflow } from './lib/skipWorkflow';
 import { actionConfig } from './config';
 
 type Main = (inputId: string) => Promise<void>;
@@ -21,7 +21,7 @@ const main: Main = async (inputId) => {
         `⏭ "${phraseToFind}" found in "${foundCommit}". Skipping workflow...`
       );
 
-      // const result = await skipWorkflow();
+      await skipWorkflow();
     } else {
       console.log(
         `✔ "${phraseToFind}" not found in commit messages. Continuing workflow...`
