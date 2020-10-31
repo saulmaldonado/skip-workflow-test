@@ -1,4 +1,4 @@
-on: [push]
+on: [pull_request]
 
 jobs:
   test-action:
@@ -6,8 +6,9 @@ jobs:
     name: A job to say hello
     steps:
       - uses: actions/checkout@v2
-      - name: test-action
+      - name: skip-workflow
         uses: ./
         with:
-          phrase: 'docs'
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: test command
+        run: yarn test

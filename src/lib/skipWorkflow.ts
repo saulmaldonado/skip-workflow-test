@@ -9,29 +9,21 @@ const { GITHUB_TOKEN_ID } = actionConfig;
 
 type SkipWorkflow = () => Promise<OctokitResponse<any> | never>;
 
-export const skipWorkflow: SkipWorkflow = async () => {
+export const skipWorkflow: SkipWorkflow = () => {
   try {
-    const GITHUB_TOKEN: string = getInput(GITHUB_TOKEN_ID);
+    const githubToken: string = getInput(GITHUB_TOKEN_ID);
 
-    const runId: number = getWorkflowRunId(context);
+    const runId: number = getWorkflowRunId();
+
+    const { actions } = getOctokit(githubToken);
 
     const {
       repo: { owner, repo },
-      sha,
-      workflow,
     } = context;
 
-    const { actions, checks } = getOctokit(GITHUB_TOKEN);
+    return actions.cancelWorkflowRun({ run_id: runId, owner, repo });
 
-    await actions.cancelWorkflowRun({ run_id: runId, owner, repo });
-    return checks.create({
-      head_sha: sha,
-      name: workflow,
-      owner,
-      repo,
-      completed_at: new Date().toISOString(),
-      conclusion: 'success',
-    });
+    // setFailed('Skipping');
   } catch (error) {
     throw new Error('❌ Error skipping workflow');
   }
