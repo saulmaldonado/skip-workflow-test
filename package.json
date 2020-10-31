@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack",
-    "test": "sleep 30"
+    "test": "yarn build 30"
   },
   "author": "Saul Maldonado <samaldonado4@gmail.com> (https://saulmaldonado.tech)",
   "license": "MIT",
