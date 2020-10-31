@@ -22,7 +22,7 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
       head: { sha },
     } = pull_request!;
 
-    const result = await checks.create({
+    await checks.create({
       head_sha: sha,
       name: workflow,
       owner,
@@ -31,6 +31,8 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
       completed_at: new Date().toISOString(),
       conclusion: 'success',
     });
+
+    const result = await checks.listForRef({ owner, repo, ref: sha });
 
     console.log(result);
 
