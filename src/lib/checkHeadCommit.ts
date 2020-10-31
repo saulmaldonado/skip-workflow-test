@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { getInput } from '@actions/core';
 import { context, getOctokit } from '@actions/github';
 import { actionConfig } from '../config';
@@ -13,11 +14,15 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
 
     const {
       repo: { owner, repo },
-      sha,
       workflow,
+      payload: { pull_request },
     } = context;
 
-    await checks.create({
+    const {
+      head: { sha },
+    } = pull_request!;
+
+    const result = await checks.create({
       head_sha: sha,
       name: workflow,
       owner,
@@ -26,8 +31,9 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
       completed_at: new Date().toISOString(),
       conclusion: 'success',
     });
-    // console.log(result);
-    console.log(context.payload.pull_request?.head.sha);
+
+    console.log(result);
+
     return sha;
   } catch (error) {
     throw new Error('❌ Error checking head commit');
