@@ -27,7 +27,7 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
       conclusion: 'success',
     });
     // console.log(result);
-    console.log(context.payload.pull_request);
+    console.log(context.payload.pull_request?.head.sha);
     return sha;
   } catch (error) {
     throw new Error('❌ Error checking head commit');
