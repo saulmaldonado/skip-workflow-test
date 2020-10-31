@@ -17,7 +17,7 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
       workflow,
     } = context;
 
-    const result = await checks.create({
+    await checks.create({
       head_sha: sha,
       name: workflow,
       owner,
@@ -26,8 +26,8 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
       completed_at: new Date().toISOString(),
       conclusion: 'success',
     });
-    console.log(result);
-    console.log(context.payload.pull_request?.body);
+    // console.log(result);
+    console.log(context.payload.pull_request);
     return sha;
   } catch (error) {
     throw new Error('❌ Error checking head commit');
