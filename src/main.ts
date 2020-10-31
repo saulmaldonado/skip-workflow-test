@@ -22,7 +22,7 @@ const main: Main = async (inputId) => {
       );
 
       const result = await skipWorkflow();
-      console.log(result.data);
+      console.log(result);
     } else {
       console.log(
         `✔ "${phraseToFind}" not found in commit messages. Continuing workflow...`
