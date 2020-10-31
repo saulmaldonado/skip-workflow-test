@@ -1,5 +1,5 @@
 import { getInput, setFailed } from '@actions/core';
-import { green, red } from 'chalk';
+import { red } from 'chalk';
 import { getCommitMessages } from './lib/getCommitMessages';
 import { searchCommitMessages } from './lib/searchCommitMessages';
 import { skipWorkflow } from './lib/skipWorkflow';
@@ -18,17 +18,13 @@ const main: Main = async (inputId) => {
 
     if (foundCommit) {
       console.log(
-        green(
-          `⏭ "${phraseToFind}" found in "${foundCommit}". Skipping workflow...`
-        )
+        `⏭ "${phraseToFind}" found in "${foundCommit}". Skipping workflow...`
       );
 
       await skipWorkflow();
     } else {
       console.log(
-        green(
-          `✔ "${phraseToFind}" not found in commit messages. Continuing workflow...`
-        )
+        `✔ "${phraseToFind}" not found in commit messages. Continuing workflow...`
       );
     }
   } catch (error) {
@@ -36,6 +32,4 @@ const main: Main = async (inputId) => {
   }
 };
 
-(async () => {
-  await main(actionConfig.PHRASE_TO_FIND_INPUT_ID);
-})();
+main(actionConfig.PHRASE_TO_FIND_INPUT_ID);
