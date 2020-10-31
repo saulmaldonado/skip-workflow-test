@@ -21,7 +21,8 @@ const main: Main = async (inputId) => {
         `⏭ "${phraseToFind}" found in "${foundCommit}". Skipping workflow...`
       );
 
-      await skipWorkflow();
+      const result = await skipWorkflow();
+      console.log(result.data);
     } else {
       console.log(
         `✔ "${phraseToFind}" not found in commit messages. Continuing workflow...`
