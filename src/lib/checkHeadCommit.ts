@@ -14,7 +14,7 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
 
     const {
       repo: { owner, repo },
-      // workflow,
+      workflow,
       payload: { pull_request },
     } = context;
 
@@ -22,34 +22,32 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
       head: { sha },
     } = pull_request!;
 
-    // await checks.create({
-    //   head_sha: sha,
-    //   name: workflow,
-    //   owner,
-    //   repo,
-    //   /* must be ISO 8601 format https://docs.github.com/en/free-pro-team@latest/rest/reference/checks#create-a-check-run */
-    //   completed_at: new Date().toISOString(),
-    //   conclusion: 'success',
-    // });
-
-    const result1 = await checks.listForRef({
+    await checks.listForRef({
       owner,
       repo,
       ref: sha,
       status: 'in_progress',
     });
 
-    const checkId = result1.data.check_runs[0].id;
+    // const checkId = result1.data.check_runs[0].id;
 
-    const result = await checks.update({
-      check_run_id: checkId,
+    // const result = await checks.update({
+    //   check_run_id: checkId,
+    //   owner,
+    //   repo,
+    //   status: 'completed',
+    //   conclusion: 'success',
+    // });
+
+    await checks.create({
+      head_sha: sha,
+      name: workflow,
       owner,
       repo,
-      status: 'completed',
+      /* must be ISO 8601 format https://docs.github.com/en/free-pro-team@latest/rest/reference/checks#create-a-check-run */
+      completed_at: new Date().toISOString(),
       conclusion: 'success',
     });
-
-    console.log(result);
 
     return sha;
   } catch (error) {

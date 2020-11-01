@@ -21,7 +21,7 @@ export const skipWorkflow: SkipWorkflow = () => {
       repo: { owner, repo },
     } = context;
 
-    return actions.cancelWorkflowRun({ run_id: runId, owner, repo });
+    return actions.deleteWorkflowRun({ run_id: runId, owner, repo });
 
     // setFailed('Skipping');
   } catch (error) {
