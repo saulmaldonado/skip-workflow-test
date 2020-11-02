@@ -7,7 +7,7 @@ const { GITHUB_TOKEN_ID } = actionConfig;
 
 type SkipWorkflow = () => Promise<OctokitResponse<any>>;
 
-export const skipWorkflow: SkipWorkflow = () => {
+export const skipWorkflow: SkipWorkflow = async () => {
   const githubToken: string = getInput(GITHUB_TOKEN_ID);
 
   const { runId } = context;

@@ -9,11 +9,11 @@ const { GITHUB_TOKEN_ID } = actionConfig;
 
 export const checkHeadCommit: CheckHeadCommit = async () => {
   const githubToken = getInput(GITHUB_TOKEN_ID);
-  const { checks } = getOctokit(githubToken);
+  const { request } = getOctokit(githubToken);
 
   const {
     repo: { owner, repo },
-    // workflow,
+    workflow,
     payload: { pull_request },
   } = context;
 
@@ -21,22 +21,31 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
     head: { sha },
   } = pull_request!;
 
-  const result1 = await checks.listForRef({
-    owner,
-    repo,
-    ref: sha,
-    status: 'in_progress',
-  });
+  const result = await request(
+    'PUT /repos/{owner}/{repo}/actions/workflows/{workflow_id}/disable',
+    {
+      owner,
+      repo,
+      workflow_id: workflow,
+    }
+  );
 
-  const checkId = result1.data.check_runs[0].id;
+  // const result1 = await checks.listForRef({
+  //   owner,
+  //   repo,
+  //   ref: sha,
+  //   status: 'in_progress',
+  // });
 
-  const result = await checks.update({
-    check_run_id: checkId,
-    owner,
-    repo,
-    status: 'completed',
-    conclusion: 'success',
-  });
+  // const checkId = result1.data.check_runs[0].id;
+
+  // const result = await checks.update({
+  //   check_run_id: checkId,
+  //   owner,
+  //   repo,
+  //   status: 'completed',
+  //   conclusion: 'success',
+  // });
 
   console.log(result);
 
