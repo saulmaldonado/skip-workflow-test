@@ -30,13 +30,15 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
 
   const checkId = result1.data.check_runs[0].id;
 
-  await checks.update({
+  const result = await checks.update({
     check_run_id: checkId,
     owner,
     repo,
     status: 'completed',
     conclusion: 'success',
   });
+
+  console.log(result);
 
   // await checks.create({
   //   head_sha: sha,
