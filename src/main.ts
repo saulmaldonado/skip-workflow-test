@@ -1,5 +1,4 @@
 import { getInput, setFailed } from '@actions/core';
-import { red } from 'chalk';
 import { getCommitMessages } from './lib/getCommitMessages';
 import { searchCommitMessages } from './lib/searchCommitMessages';
 import { skipWorkflow } from './lib/skipWorkflow';
@@ -28,7 +27,7 @@ const main: Main = async (inputId) => {
       );
     }
   } catch (error) {
-    setFailed(red(error.message));
+    setFailed(error.message);
   }
 };
 

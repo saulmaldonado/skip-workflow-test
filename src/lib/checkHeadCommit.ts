@@ -14,7 +14,7 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
 
     const {
       repo: { owner, repo },
-      workflow,
+      // workflow,
       payload: { pull_request },
     } = context;
 
@@ -39,15 +39,15 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
       conclusion: 'success',
     });
 
-    await checks.create({
-      head_sha: sha,
-      name: workflow,
-      owner,
-      repo,
-      /* must be ISO 8601 format https://docs.github.com/en/free-pro-team@latest/rest/reference/checks#create-a-check-run */
-      completed_at: new Date().toISOString(),
-      conclusion: 'success',
-    });
+    // await checks.create({
+    //   head_sha: sha,
+    //   name: workflow,
+    //   owner,
+    //   repo,
+    //   /* must be ISO 8601 format https://docs.github.com/en/free-pro-team@latest/rest/reference/checks#create-a-check-run */
+    //   completed_at: new Date().toISOString(),
+    //   conclusion: 'success',
+    // });
 
     return sha;
   } catch (error) {
