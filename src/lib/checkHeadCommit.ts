@@ -51,17 +51,17 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
 
   const path = '.github/workflows/checkWorkflow.yaml';
 
-  const result3 = await request(
+  const result4 = await request(
     'POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches',
     {
       owner,
       repo,
       workflow_id: path,
-      // ref
+      ref: 'ref',
     }
   );
 
-  console.log(result3);
+  console.log(result4);
 
   return sha;
 };
