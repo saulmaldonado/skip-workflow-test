@@ -566,13 +566,12 @@ eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexpo
 /*! flagged exports */
 /*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
 /*! export getPrId [provided] [no usage info] [missing usage info prevents renaming] */
-/*! export getWorkflowRunId [provided] [no usage info] [missing usage info prevents renaming] */
 /*! other exports [not provided] [no usage info] */
 /*! runtime requirements: __webpack_exports__, __webpack_require__ */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.getWorkflowRunId = exports.getPrId = void 0;\nvar github_1 = __webpack_require__(/*! @actions/github */ \"./node_modules/@actions/github/lib/github.js\");\nexports.getPrId = function () {\n    var _a;\n    var prRef = github_1.context.ref;\n    var prIdRegex = /(?<=refs\\/pull\\/)\\d+(?=\\/merge)/i;\n    var prId = ((_a = prIdRegex.exec(prRef)) !== null && _a !== void 0 ? _a : [])[0];\n    if (!prId) {\n        throw new Error('❌ Error finding commit ID. Make sure this workflow is triggered by a \"pull_request\" event');\n    }\n    return Number(prId);\n};\nexports.getWorkflowRunId = function () { return github_1.context.runId; };\n\n\n//# sourceURL=webpack://skip-workflow/./src/lib/actionContext.ts?");
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.getPrId = void 0;\nvar github_1 = __webpack_require__(/*! @actions/github */ \"./node_modules/@actions/github/lib/github.js\");\nexports.getPrId = function () {\n    var _a;\n    var prRef = github_1.context.ref;\n    var prIdRegex = /(?<=refs\\/pull\\/)\\d+(?=\\/merge)/i;\n    var prId = ((_a = prIdRegex.exec(prRef)) !== null && _a !== void 0 ? _a : [])[0];\n    if (!prId) {\n        throw new Error('❌ Error finding commit ID. Make sure this workflow is triggered by a \"pull_request\" event');\n    }\n    return Number(prId);\n};\n\n\n//# sourceURL=webpack://skip-workflow/./src/lib/actionContext.ts?");
 
 /***/ }),
 
@@ -619,7 +618,7 @@ eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexpo
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.skipWorkflow = void 0;\nvar core_1 = __webpack_require__(/*! @actions/core */ \"./node_modules/@actions/core/lib/core.js\");\nvar github_1 = __webpack_require__(/*! @actions/github */ \"./node_modules/@actions/github/lib/github.js\");\nvar config_1 = __webpack_require__(/*! ../config */ \"./src/config/index.ts\");\nvar actionContext_1 = __webpack_require__(/*! ./actionContext */ \"./src/lib/actionContext.ts\");\nvar GITHUB_TOKEN_ID = config_1.actionConfig.GITHUB_TOKEN_ID;\nexports.skipWorkflow = function () {\n    try {\n        var githubToken = core_1.getInput(GITHUB_TOKEN_ID);\n        var runId = actionContext_1.getWorkflowRunId();\n        var actions = github_1.getOctokit(githubToken).actions;\n        var _a = github_1.context.repo, owner = _a.owner, repo = _a.repo;\n        return actions.deleteWorkflowRun({ run_id: runId, owner: owner, repo: repo });\n        // setFailed('Skipping');\n    }\n    catch (error) {\n        throw new Error('❌ Error skipping workflow');\n    }\n};\n\n\n//# sourceURL=webpack://skip-workflow/./src/lib/skipWorkflow.ts?");
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.skipWorkflow = void 0;\nvar core_1 = __webpack_require__(/*! @actions/core */ \"./node_modules/@actions/core/lib/core.js\");\nvar github_1 = __webpack_require__(/*! @actions/github */ \"./node_modules/@actions/github/lib/github.js\");\nvar config_1 = __webpack_require__(/*! ../config */ \"./src/config/index.ts\");\nvar GITHUB_TOKEN_ID = config_1.actionConfig.GITHUB_TOKEN_ID;\nexports.skipWorkflow = function () {\n    try {\n        var githubToken = core_1.getInput(GITHUB_TOKEN_ID);\n        var runId = github_1.context.runId;\n        var actions = github_1.getOctokit(githubToken).actions;\n        var _a = github_1.context.repo, owner = _a.owner, repo = _a.repo;\n        return actions.deleteWorkflowRun({ run_id: runId, owner: owner, repo: repo });\n        // setFailed('Skipping');\n    }\n    catch (error) {\n        throw new Error('❌ Error skipping workflow');\n    }\n};\n\n\n//# sourceURL=webpack://skip-workflow/./src/lib/skipWorkflow.ts?");
 
 /***/ }),
 
