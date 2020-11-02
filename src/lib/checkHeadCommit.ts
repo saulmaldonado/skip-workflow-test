@@ -27,6 +27,8 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
     status: 'in_progress',
   });
 
+  console.log(workflow);
+
   const checkId = result1.data.check_runs[0].id;
 
   const result = await checks.update({
