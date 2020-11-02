@@ -27,7 +27,7 @@ const main: Main = async (inputId) => {
       );
     }
   } catch (error) {
-    setFailed(error.message);
+    setFailed(error);
   }
 };
 

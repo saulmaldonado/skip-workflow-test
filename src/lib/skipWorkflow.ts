@@ -5,24 +5,18 @@ import { actionConfig } from '../config';
 
 const { GITHUB_TOKEN_ID } = actionConfig;
 
-type SkipWorkflow = () => Promise<OctokitResponse<any> | never>;
+type SkipWorkflow = () => Promise<OctokitResponse<any>>;
 
 export const skipWorkflow: SkipWorkflow = () => {
-  try {
-    const githubToken: string = getInput(GITHUB_TOKEN_ID);
+  const githubToken: string = getInput(GITHUB_TOKEN_ID);
 
-    const { runId } = context;
+  const { runId } = context;
 
-    const { actions } = getOctokit(githubToken);
+  const { actions } = getOctokit(githubToken);
 
-    const {
-      repo: { owner, repo },
-    } = context;
+  const {
+    repo: { owner, repo },
+  } = context;
 
-    return actions.deleteWorkflowRun({ run_id: runId, owner, repo });
-
-    // setFailed('Skipping');
-  } catch (error) {
-    throw new Error('❌ Error skipping workflow');
-  }
+  return actions.deleteWorkflowRun({ run_id: runId, owner, repo });
 };
