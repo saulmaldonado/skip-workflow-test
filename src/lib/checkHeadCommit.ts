@@ -35,7 +35,8 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
     owner,
     repo,
     status: 'completed',
-    conclusion: 'success',
+    conclusion: 'skipped',
+    completed_at: new Date().toISOString(),
   });
 
   console.log(result);
