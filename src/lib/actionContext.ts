@@ -13,6 +13,3 @@ export const getPrId: GetPrId = () => {
   }
   return Number(prId);
 };
-
-type GetWorkflowRunId = () => number;
-export const getWorkflowRunId: GetWorkflowRunId = () => context.runId;
