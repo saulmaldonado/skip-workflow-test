@@ -56,7 +56,7 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
     repo,
   });
 
-  console.log(result);
+  console.log(result.data.workflows);
 
   // const result4 = await request(
   //   'POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches',
