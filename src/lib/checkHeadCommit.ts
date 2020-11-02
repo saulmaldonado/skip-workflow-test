@@ -5,9 +5,8 @@ import { actionConfig } from '../config';
 
 type CheckHeadCommit = () => Promise<string | never>;
 
-const { GITHUB_TOKEN_ID } = actionConfig;
-
 export const checkHeadCommit: CheckHeadCommit = async () => {
+  const { GITHUB_TOKEN_ID } = actionConfig;
   const githubToken = getInput(GITHUB_TOKEN_ID);
   const { checks } = getOctokit(githubToken);
 
