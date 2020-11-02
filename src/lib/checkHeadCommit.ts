@@ -8,7 +8,7 @@ type CheckHeadCommit = () => Promise<string | never>;
 export const checkHeadCommit: CheckHeadCommit = async () => {
   const { GITHUB_TOKEN_ID } = actionConfig;
   const githubToken = getInput(GITHUB_TOKEN_ID);
-  const { checks, actions } = getOctokit(githubToken);
+  const { checks, request } = getOctokit(githubToken);
 
   const {
     repo: { owner, repo },
@@ -28,11 +28,9 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
     status: 'in_progress',
   });
 
-  console.log(workflow);
-
   const checkId = result1.data.check_runs[0].id;
 
-  const result = await checks.update({
+  await checks.update({
     check_run_id: checkId,
     owner,
     repo,
@@ -40,8 +38,6 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
     conclusion: 'skipped',
     completed_at: new Date().toISOString(),
   });
-
-  console.log(result);
 
   await checks.create({
     head_sha: sha,
@@ -55,12 +51,17 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
 
   const path = 'checkWorkflow.yaml';
 
-  await actions.createWorkflowDispatch({
-    owner,
-    repo,
-    workflow_id: (path as unknown) as number,
-    ref,
-  });
+  const result3 = await request(
+    'POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches',
+    {
+      owner,
+      repo,
+      workflow_id: path,
+      ref,
+    }
+  );
+
+  console.log(result3);
 
   return sha;
 };
