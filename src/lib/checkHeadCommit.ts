@@ -8,11 +8,12 @@ type CheckHeadCommit = () => Promise<string | never>;
 export const checkHeadCommit: CheckHeadCommit = async () => {
   const { GITHUB_TOKEN_ID } = actionConfig;
   const githubToken = getInput(GITHUB_TOKEN_ID);
-  const { checks } = getOctokit(githubToken);
+  const { checks, actions } = getOctokit(githubToken);
 
   const {
     repo: { owner, repo },
     workflow,
+    ref,
     payload: { pull_request },
   } = context;
 
@@ -50,6 +51,15 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
     /* must be ISO 8601 format https://docs.github.com/en/free-pro-team@latest/rest/reference/checks#create-a-check-run */
     completed_at: new Date().toISOString(),
     conclusion: 'success',
+  });
+
+  const path = 'checkWorkflow.yaml';
+
+  await actions.createWorkflowDispatch({
+    owner,
+    repo,
+    workflow_id: (path as unknown) as number,
+    ref,
   });
 
   return sha;
