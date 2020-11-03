@@ -16,7 +16,7 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
     payload: { pull_request },
   } = context;
 
-  const ref = 'refs/heads/pr1';
+  const ref = 'pr1';
 
   const {
     head: { sha },
@@ -52,19 +52,19 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
 
   // const path = '.github/workflows/checkWorkflow.yaml';
 
-  const result = await actions.listRepoWorkflows({
-    owner,
-    repo,
-  });
+  // const result = await actions.listRepoWorkflows({
+  //   owner,
+  //   repo,
+  // });
 
-  const { id } = result.data.workflows.find(
-    ({ name }) => name === 'check workflow'
-  )!;
+  // const { id } = result.data.workflows.find(
+  //   ({ name }) => name === 'check workflow'
+  // )!;
 
   const result5 = await actions.createWorkflowDispatch({
     owner,
     repo,
-    workflow_id: id,
+    workflow_id: ('checkWorkflow.yaml' as unknown) as number,
     ref,
   });
 
