@@ -56,18 +56,18 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
     repo,
   });
 
-  console.log(result.data.workflows);
+  const { id } = result.data.workflows.find(
+    ({ name }) => name === 'check workflow'
+  )!;
 
-  // const result4 = await request(
-  //   'POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches',
-  //   {
-  //     owner,
-  //     repo,
-  //     workflow_id: path,
-  //   }
-  // );
+  const result5 = await actions.createWorkflowDispatch({
+    owner,
+    repo,
+    workflow_id: id,
+    ref: 'check workflow',
+  });
 
-  // console.log(result4);
+  console.log(result5);
 
   return sha;
 };
