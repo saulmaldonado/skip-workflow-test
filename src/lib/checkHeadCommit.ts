@@ -31,7 +31,7 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
 
   const checkId = result1.data.check_runs[0].id;
 
-  await checks.update({
+  const res = await checks.update({
     check_run_id: checkId,
     owner,
     repo,
@@ -40,15 +40,7 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
     completed_at: new Date().toISOString(),
   });
 
-  // await checks.create({
-  //   head_sha: sha,
-  //   name: workflow,
-  //   owner,
-  //   repo,
-  //   /* must be ISO 8601 format https://docs.github.com/en/free-pro-team@latest/rest/reference/checks#create-a-check-run */
-  //   completed_at: new Date().toISOString(),
-  //   conclusion: 'success',
-  // });
+  console.log(res);
 
   return sha;
 };
