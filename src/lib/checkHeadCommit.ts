@@ -22,17 +22,17 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
     head: { sha },
   } = pull_request!;
 
-  const result1 = await checks.listForRef({
-    owner,
-    repo,
-    ref: sha,
-    status: 'in_progress',
-  });
+  // const result1 = await checks.listForRef({
+  //   owner,
+  //   repo,
+  //   ref: sha,
+  //   status: 'in_progress',
+  // });
 
-  const checkId = result1.data.check_runs[0].id;
+  // const checkId = result1.data.check_runs[0].id;
 
   const res = await checks.update({
-    check_run_id: checkId,
+    check_run_id: 344496046,
     owner,
     repo,
     status: 'completed',
