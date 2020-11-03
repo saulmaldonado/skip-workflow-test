@@ -4,7 +4,7 @@ jobs:
   test-action:
     runs-on: ubuntu-latest
     name: A job to say hello
-    if: 'true'
+    if: 'false'
     steps:
       - uses: actions/checkout@v2
       - name: skip-workflow
