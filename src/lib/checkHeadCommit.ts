@@ -32,7 +32,7 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
   // const checkId = result1.data.check_runs[0].id;
 
   const res = await checks.update({
-    check_run_id: 344496046,
+    check_run_id: 1350192661,
     owner,
     repo,
     status: 'completed',
