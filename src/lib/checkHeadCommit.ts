@@ -13,7 +13,7 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
   const {
     repo: { owner, repo },
     workflow,
-    // ref,
+    ref,
     payload: { pull_request },
   } = context;
 
@@ -64,7 +64,7 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
     owner,
     repo,
     workflow_id: id,
-    ref: 'check workflow',
+    ref,
   });
 
   console.log(result5);
