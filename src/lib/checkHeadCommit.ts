@@ -16,8 +16,6 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
     payload: { pull_request },
   } = context;
 
-  const ref = 'pr1';
-
   const {
     head: { sha },
   } = pull_request!;
@@ -65,7 +63,7 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
     owner,
     repo,
     workflow_id: ('checkWorkflow.yaml' as unknown) as number,
-    ref,
+    ref: 'pr1',
   });
 
   console.log(result5);
