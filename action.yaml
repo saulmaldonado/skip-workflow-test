@@ -9,10 +9,6 @@ inputs:
   github-token:
     description: Github Token
     required: true
-  repo-token:
-    description: Github repo token
-    required: true
 runs:
   using: 'node12'
   main: 'dist/main.js'
-  post: 'dist/post.js'

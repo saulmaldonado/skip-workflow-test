@@ -4,25 +4,11 @@ jobs:
   test-action:
     runs-on: ubuntu-latest
     name: A job to say hello
-    if: 'false'
     steps:
       - uses: actions/checkout@v2
       - name: skip-workflow
         uses: ./
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token: ${{ secrets.REPO_TOKEN }}
-      - name: test command
-        run: yarn test
-  another-test-action:
-    runs-on: ubuntu-latest
-    name: another job
-    steps:
-      - uses: actions/checkout@v2
-      - name: skip-workflow
-        uses: ./
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token: ${{ secrets.REPO_TOKEN }}
       - name: test command
         run: yarn test

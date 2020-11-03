@@ -20,7 +20,7 @@ const main: Main = async (inputId) => {
         `⏭ "${phraseToFind}" found in "${foundCommit}". Skipping workflow...`
       );
 
-      await skipWorkflow();
+      skipWorkflow();
     } else {
       console.log(
         `✔ "${phraseToFind}" not found in commit messages. Continuing workflow...`
