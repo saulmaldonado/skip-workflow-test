@@ -10,5 +10,6 @@ jobs:
         uses: ./
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{secrets.REPO_TOKEN}}
       - name: test command
         run: yarn test
