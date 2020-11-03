@@ -70,7 +70,7 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
       ref: 'pr1',
       repo,
       // @ts-ignore
-      workflow_id: 'checkWorkflow.yaml',
+      workflow_id: 'checkWorkflow2.yaml',
     }
   );
 
