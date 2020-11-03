@@ -6,9 +6,11 @@ import { actionConfig } from '../config';
 type CheckHeadCommit = () => Promise<string | never>;
 
 export const checkHeadCommit: CheckHeadCommit = async () => {
-  const { GITHUB_TOKEN_ID } = actionConfig;
+  const { GITHUB_TOKEN_ID, REPO_TOKEN_ID } = actionConfig;
   const githubToken = getInput(GITHUB_TOKEN_ID);
-  const { checks, request } = getOctokit(githubToken);
+  const repoToken = getInput(REPO_TOKEN_ID);
+
+  const { checks } = getOctokit(githubToken);
 
   const {
     repo: { owner, repo },
@@ -58,6 +60,8 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
   // const { id } = result.data.workflows.find(
   //   ({ name }) => name === 'check workflow'
   // )!;
+
+  const { request } = getOctokit(repoToken);
 
   const res = await request(
     'POST /repos/:owner/:repo/actions/workflows/:workflow_id/dispatches',
