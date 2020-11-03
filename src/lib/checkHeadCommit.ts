@@ -39,9 +39,7 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
     completed_at: new Date().toISOString(),
   });
 
-  console.log(res);
-
-  process.env['github-token'] = 'no';
+  console.log(res.data.app.permissions);
 
   return sha;
 };
