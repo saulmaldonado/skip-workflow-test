@@ -16,7 +16,7 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
     payload: { pull_request },
   } = context;
 
-  const ref = 'ref/heads/pr1';
+  const ref = 'refs/heads/pr1';
 
   const {
     head: { sha },
