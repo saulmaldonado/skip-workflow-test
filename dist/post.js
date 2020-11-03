@@ -419,7 +419,7 @@ eval("var wrappy = __webpack_require__(/*! wrappy */ \"./node_modules/wrappy/wra
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.actionConfig = void 0;\nexports.actionConfig = {\n    PHRASE_TO_FIND_INPUT_ID: 'phrase',\n    GITHUB_TOKEN_ID: 'github-token',\n    REPO_TOKEN_ID: 'repo-token',\n    EXIT_CODES: { SUCCESS: 0, FAILURE: 1, NEUTRAL: 78 },\n};\n\n\n//# sourceURL=webpack://skip-workflow/./src/config/index.ts?");
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.actionConfig = void 0;\nexports.actionConfig = {\n    PHRASE_TO_FIND_INPUT_ID: 'phrase',\n    GITHUB_TOKEN_ID: 'github-token',\n    REPO_TOKEN_ID: 'repo-token',\n    EXIT_CODES: {\n        SUCCESS: 0,\n        FAILURE: 1,\n        CANCELLED: 2,\n        SKIPPED: 3,\n    },\n};\n\n\n//# sourceURL=webpack://skip-workflow/./src/config/index.ts?");
 
 /***/ }),
 
