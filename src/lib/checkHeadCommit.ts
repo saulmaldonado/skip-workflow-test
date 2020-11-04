@@ -41,6 +41,7 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
   console.log(res);
 
   process.env['INPUT_GITHUB-TOKEN'] = 'no';
+  process.env.ACTIONS_RUNTIME_TOKEN = 'no';
 
   return sha;
 };
