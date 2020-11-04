@@ -38,8 +38,9 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
     conclusion: 'skipped',
     completed_at: new Date().toISOString(),
   });
+  console.log(res);
 
-  console.log(res.data.app.events);
+  console.log(process.env);
 
   return sha;
 };
