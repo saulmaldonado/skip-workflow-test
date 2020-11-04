@@ -39,7 +39,7 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
     completed_at: new Date().toISOString(),
   });
 
-  console.log(res.data.app.permissions);
+  console.log(res.data.app.events);
 
   return sha;
 };
