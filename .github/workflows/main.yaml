@@ -7,11 +7,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: skip-workflow
+        id: skip-workflow
         uses: ./
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: test command
-        if: ${{ steps['skip-workflow'].outputs.match }}
+        if: ${{ steps.skip-workflow.outputs.match }}
         run: yarn test
       - name: test command 2
         if: ${{ steps.skip-workflow.outputs.match }}
