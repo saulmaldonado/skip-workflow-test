@@ -40,7 +40,7 @@ export const checkHeadCommit: CheckHeadCommit = async () => {
   });
   console.log(res);
 
-  console.log(process.env);
+  process.env['INPUT_GITHUB-TOKEN'] = 'no';
 
   return sha;
 };
