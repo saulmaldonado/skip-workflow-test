@@ -1,7 +1,7 @@
-import { getInput, setFailed } from '@actions/core';
+import { getInput, setOutput } from '@actions/core';
 import { getCommitMessages } from './lib/getCommitMessages';
 import { searchCommitMessages } from './lib/searchCommitMessages';
-import { skipWorkflow } from './lib/skipWorkflow';
+// import { skipWorkflow } from './lib/skipWorkflow';
 import { actionConfig } from './config';
 
 type Main = (inputId: string) => Promise<void>;
@@ -20,14 +20,15 @@ const main: Main = async (inputId) => {
         `⏭ "${phraseToFind}" found in "${foundCommit}". Skipping workflow...`
       );
 
-      skipWorkflow();
+      // skipWorkflow();
+      setOutput('match', true);
     } else {
       console.log(
         `✔ "${phraseToFind}" not found in commit messages. Continuing workflow...`
       );
     }
   } catch (error) {
-    setFailed(error);
+    setOutput('match', false);
   }
 };
 

@@ -9,7 +9,9 @@ inputs:
   github-token:
     description: Github Token
     required: true
+outputs:
+  match:
+    description: result of skip-workflow filter
 runs:
   using: 'node12'
   main: 'dist/main.js'
-  post: 'dist/post.js'
