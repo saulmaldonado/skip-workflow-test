@@ -6,8 +6,7 @@ import { actionConfig } from '../config';
 type SkipWorkflow = () => void;
 
 export const skipWorkflow: SkipWorkflow = async () => {
-  const githubToken = getInput(actionConfig.REPO_TOKEN_ID);
-  const repoToken = getInput('repo-token');
+  const githubToken = getInput(actionConfig.GITHUB_TOKEN_ID);
 
   console.log(githubToken);
 
@@ -35,7 +34,7 @@ export const skipWorkflow: SkipWorkflow = async () => {
     event_type: 'skip-workflow',
     owner,
     repo,
-    client_payload: { githubToken: repoToken, checkId },
+    client_payload: { githubToken, checkId },
   });
 
   console.log(result);
