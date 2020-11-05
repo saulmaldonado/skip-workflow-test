@@ -1,6 +1,0 @@
-name: skip-workflow-checkrun-action
-author: saulmaldonado
-description: 'skip workflow based on commit message(s) pull requests'
-runs:
-  using: 'node12'
-  main: 'dist/post.js'

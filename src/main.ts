@@ -1,16 +1,25 @@
-import { getInput, setOutput } from '@actions/core';
+import { getInput, setFailed, setOutput } from '@actions/core';
+import { getOctokit } from '@actions/github';
+import { context } from '@actions/github/lib/utils';
 import { getCommitMessages } from './lib/getCommitMessages';
 import { searchCommitMessages } from './lib/searchCommitMessages';
-// import { skipWorkflow } from './lib/skipWorkflow';
 import { actionConfig } from './config';
-import { skipWorkflow } from './lib/skipWorkflow';
 
-type Main = (inputId: string) => Promise<void>;
-const main: Main = async (inputId) => {
+type Main = () => Promise<void>;
+const main: Main = async () => {
   try {
-    const phraseToFind: string = getInput(inputId);
+    const {
+      GITHUB_TOKEN_ID,
+      MATCH_RESULT_OUTPUT_ID,
+      PHRASE_TO_FIND_INPUT_ID,
+    } = actionConfig;
 
-    const commitMessages: string[] = await getCommitMessages();
+    const githubToken: string = getInput(GITHUB_TOKEN_ID);
+    const octokit = getOctokit(githubToken);
+
+    const phraseToFind: string = getInput(PHRASE_TO_FIND_INPUT_ID);
+
+    const commitMessages: string[] = await getCommitMessages(octokit, context);
 
     console.log(`🔎 Searching all commit messages for "${phraseToFind}"...`);
 
@@ -21,16 +30,16 @@ const main: Main = async (inputId) => {
         `⏭ "${phraseToFind}" found in "${foundCommit}". Skipping workflow...`
       );
 
-      skipWorkflow();
-      setOutput('match', true);
+      setOutput(MATCH_RESULT_OUTPUT_ID, false);
     } else {
       console.log(
         `✔ "${phraseToFind}" not found in commit messages. Continuing workflow...`
       );
+      setOutput(MATCH_RESULT_OUTPUT_ID, true);
     }
   } catch (error) {
-    setOutput('match', false);
+    setFailed(error);
   }
 };
 
-main(actionConfig.PHRASE_TO_FIND_INPUT_ID);
+main();

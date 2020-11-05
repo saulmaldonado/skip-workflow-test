@@ -1,23 +1,26 @@
-import { getInput } from '@actions/core';
-import { context, getOctokit } from '@actions/github';
-import { actionConfig } from '../config';
+import { getOctokit } from '@actions/github';
+import { Context } from '@actions/github/lib/context';
 import { getPrId } from './actionContext';
 
-const { GITHUB_TOKEN_ID } = actionConfig;
+type GetCommitMessages = (
+  octokit: ReturnType<typeof getOctokit>,
+  context: Context
+) => Promise<string[] | never>;
 
-type GetCommitMessages = () => Promise<string[] | never>;
-
-export const getCommitMessages: GetCommitMessages = async () => {
+export const getCommitMessages: GetCommitMessages = async (
+  octokit,
+  context
+) => {
   try {
-    const octokit = getOctokit(getInput(GITHUB_TOKEN_ID));
+    const { pulls } = octokit;
 
     const {
       repo: { owner, repo },
     } = context;
 
-    const prId: number = getPrId();
+    const prId: number = getPrId(context);
 
-    const { data: commits } = await octokit.pulls.listCommits({
+    const { data: commits } = await pulls.listCommits({
       pull_number: prId,
       owner,
       repo,

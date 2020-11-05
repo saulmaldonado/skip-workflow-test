@@ -1,7 +1,7 @@
-import { context } from '@actions/github';
+import { Context } from '@actions/github/lib/context';
 
-type GetPrId = () => number | never;
-export const getPrId: GetPrId = () => {
+type GetPrId = (context: Context) => number;
+export const getPrId: GetPrId = (context) => {
   const { ref: prRef } = context;
   const prIdRegex: RegExp = /(?<=refs\/pull\/)\d+(?=\/merge)/i;
 
