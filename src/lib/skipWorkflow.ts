@@ -34,7 +34,10 @@ export const skipWorkflow: SkipWorkflow = async () => {
     event_type: 'skip-workflow',
     owner,
     repo,
-    client_payload: { githubToken, checkId },
+    client_payload: {
+      githubToken: getInput(actionConfig.GITHUB_TOKEN_ID),
+      checkId,
+    },
   });
 
   console.log(result);
