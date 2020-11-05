@@ -1,30 +1,24 @@
 import { getInput } from '@actions/core';
-import { getOctokit, context } from '@actions/github';
-import { OctokitResponse } from '@octokit/types/dist-types/OctokitResponse';
+import { context, getOctokit } from '@actions/github';
 import { actionConfig } from '../config';
 
-import { getWorkflowRunId } from './actionContext';
+type SkipWorkflow = () => void;
 
-const { GITHUB_TOKEN_ID } = actionConfig;
+export const skipWorkflow: SkipWorkflow = async () => {
+  const githubToken = getInput(actionConfig.REPO_TOKEN_ID);
 
-type SkipWorkflow = () => Promise<OctokitResponse<any> | never>;
+  const { repos } = getOctokit(githubToken);
 
-export const skipWorkflow: SkipWorkflow = () => {
-  try {
-    const githubToken: string = getInput(GITHUB_TOKEN_ID);
+  const {
+    repo: { owner, repo },
+  } = context;
 
-    const runId: number = getWorkflowRunId();
+  const result = await repos.createDispatchEvent({
+    event_type: 'skip-workflow',
+    owner,
+    repo,
+    client_payload: { githubToken },
+  });
 
-    const { actions } = getOctokit(githubToken);
-
-    const {
-      repo: { owner, repo },
-    } = context;
-
-    return actions.cancelWorkflowRun({ run_id: runId, owner, repo });
-
-    // setFailed('Skipping');
-  } catch (error) {
-    throw new Error('❌ Error skipping workflow');
-  }
+  console.log(result);
 };

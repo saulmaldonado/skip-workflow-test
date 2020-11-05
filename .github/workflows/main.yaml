@@ -1,14 +1,27 @@
 on: [pull_request]
 
 jobs:
-  test-action:
+  check-commit:
     runs-on: ubuntu-latest
-    name: A job to say hello
+    name: check commit
+    outputs:
+      match: ${{ steps.skip-workflow.outputs.match }}
     steps:
       - uses: actions/checkout@v2
       - name: skip-workflow
+        id: skip-workflow
         uses: ./
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secrets.REPO_TOKEN }}
+
+  test-action:
+    needs: check-commit
+    if: ${{ needs.check-commit.outputs.match }}
+    runs-on: ubuntu-latest
+    name: A job to say hello
+    steps:
       - name: test command
+        run: yarn test
+      - name: test command 2
         run: yarn test

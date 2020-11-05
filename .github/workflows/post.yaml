@@ -8,4 +8,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: checkrun-workflow
-        uses: ./checkrun-action/
+        uses: ./checkrun-action/action.yaml
