@@ -11,13 +11,14 @@ export const skipWorkflow: SkipWorkflow = async () => {
 
   const {
     repo: { owner, repo },
+    runId,
   } = context;
 
   const result = await repos.createDispatchEvent({
     event_type: 'skip-workflow',
     owner,
     repo,
-    client_payload: { githubToken },
+    client_payload: { githubToken, runId },
   });
 
   console.log(result);

@@ -1,13 +1,21 @@
 /* eslint-disable camelcase */
-import { context } from '@actions/github';
+import { context, getOctokit } from '@actions/github';
 
 type CheckHeadCommit = () => void;
 
 export const checkHeadCommit: CheckHeadCommit = async () => {
-  const { payload } = context;
+  const {
+    payload: { githubToken, runId },
+    repo: { owner, repo },
+  } = context;
 
-  // const { githubToken } = payload;
+  const { checks } = getOctokit(githubToken);
 
-  // const {} = getOctokit(githubToken);
-  console.log(payload);
+  const result = await checks.update({
+    check_run_id: runId,
+    owner,
+    repo,
+    conclusion: 'skipped',
+  });
+  console.log(result);
 };
