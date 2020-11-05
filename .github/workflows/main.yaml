@@ -13,6 +13,7 @@ jobs:
         uses: ./
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secret.REPO_TOKEN }}
 
   test-action:
     needs: check-commit

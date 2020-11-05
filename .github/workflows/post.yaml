@@ -1,6 +1,6 @@
 on:
   repository_dispatch:
-    types: ['skip-workflow']
+    types: skip-workflow
 jobs:
   check-commit:
     runs-on: ubuntu-latest
