@@ -7,10 +7,10 @@ type SkipWorkflow = () => void;
 
 export const skipWorkflow: SkipWorkflow = async () => {
   const githubToken = getInput(actionConfig.GITHUB_TOKEN_ID);
+  const repoToken = getInput(actionConfig.REPO_TOKEN_ID);
 
-  console.log(githubToken);
-
-  const { repos, checks } = getOctokit(githubToken);
+  const { checks } = getOctokit(githubToken);
+  const { repos } = getOctokit(repoToken);
 
   const {
     repo: { owner, repo },
