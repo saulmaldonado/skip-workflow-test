@@ -6,15 +6,17 @@ type CheckHeadCommit = () => void;
 export const checkHeadCommit: CheckHeadCommit = async () => {
   const {
     payload: {
-      client_payload: { githubToken, runId },
+      client_payload: { githubToken, checkId },
     },
     repo: { owner, repo },
   } = context;
 
+  console.log({ githubToken, checkId });
+
   const { checks } = getOctokit(githubToken);
 
   const result = await checks.update({
-    check_run_id: runId,
+    check_run_id: checkId,
     owner,
     repo,
     conclusion: 'skipped',
