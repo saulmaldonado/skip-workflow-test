@@ -6,7 +6,7 @@ import { actionConfig } from '../config';
 type SkipWorkflow = () => void;
 
 export const skipWorkflow: SkipWorkflow = async () => {
-  const githubToken = getInput(actionConfig.REPO_TOKEN_ID);
+  const githubToken = getInput(actionConfig.GITHUB_TOKEN_ID);
 
   console.log(githubToken);
 
