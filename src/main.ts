@@ -10,7 +10,7 @@ const main: Main = async () => {
   try {
     const {
       GITHUB_TOKEN_ID,
-      MATCH_RESULT_OUTPUT_ID,
+      SKIP_JOB_OUTPUT_ID,
       PHRASE_TO_FIND_INPUT_ID,
     } = actionConfig;
     // change
@@ -30,12 +30,12 @@ const main: Main = async () => {
         `⏭ "${phraseToFind}" found in "${foundCommit}". Skipping workflow...`
       );
 
-      setOutput(MATCH_RESULT_OUTPUT_ID, 'true');
+      setOutput(SKIP_JOB_OUTPUT_ID, 'true');
     } else {
       console.log(
         `✔ "${phraseToFind}" not found in commit messages. Continuing workflow...`
       );
-      setOutput(MATCH_RESULT_OUTPUT_ID, '');
+      setOutput(SKIP_JOB_OUTPUT_ID, '');
     }
   } catch (error) {
     setFailed(error);
