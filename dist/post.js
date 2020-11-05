@@ -9,65 +9,6 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./node_modules/@actions/core/lib/command.js":
-/*!***************************************************!*\
-  !*** ./node_modules/@actions/core/lib/command.js ***!
-  \***************************************************/
-/*! unknown exports (runtime-defined) */
-/*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:20-24 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-eval("\nvar __importStar = (this && this.__importStar) || function (mod) {\n    if (mod && mod.__esModule) return mod;\n    var result = {};\n    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];\n    result[\"default\"] = mod;\n    return result;\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nconst os = __importStar(__webpack_require__(/*! os */ \"os\"));\nconst utils_1 = __webpack_require__(/*! ./utils */ \"./node_modules/@actions/core/lib/utils.js\");\n/**\n * Commands\n *\n * Command Format:\n *   ::name key=value,key=value::message\n *\n * Examples:\n *   ::warning::This is the message\n *   ::set-env name=MY_VAR::some value\n */\nfunction issueCommand(command, properties, message) {\n    const cmd = new Command(command, properties, message);\n    process.stdout.write(cmd.toString() + os.EOL);\n}\nexports.issueCommand = issueCommand;\nfunction issue(name, message = '') {\n    issueCommand(name, {}, message);\n}\nexports.issue = issue;\nconst CMD_STRING = '::';\nclass Command {\n    constructor(command, properties, message) {\n        if (!command) {\n            command = 'missing.command';\n        }\n        this.command = command;\n        this.properties = properties;\n        this.message = message;\n    }\n    toString() {\n        let cmdStr = CMD_STRING + this.command;\n        if (this.properties && Object.keys(this.properties).length > 0) {\n            cmdStr += ' ';\n            let first = true;\n            for (const key in this.properties) {\n                if (this.properties.hasOwnProperty(key)) {\n                    const val = this.properties[key];\n                    if (val) {\n                        if (first) {\n                            first = false;\n                        }\n                        else {\n                            cmdStr += ',';\n                        }\n                        cmdStr += `${key}=${escapeProperty(val)}`;\n                    }\n                }\n            }\n        }\n        cmdStr += `${CMD_STRING}${escapeData(this.message)}`;\n        return cmdStr;\n    }\n}\nfunction escapeData(s) {\n    return utils_1.toCommandValue(s)\n        .replace(/%/g, '%25')\n        .replace(/\\r/g, '%0D')\n        .replace(/\\n/g, '%0A');\n}\nfunction escapeProperty(s) {\n    return utils_1.toCommandValue(s)\n        .replace(/%/g, '%25')\n        .replace(/\\r/g, '%0D')\n        .replace(/\\n/g, '%0A')\n        .replace(/:/g, '%3A')\n        .replace(/,/g, '%2C');\n}\n//# sourceMappingURL=command.js.map\n\n//# sourceURL=webpack://skip-workflow/./node_modules/@actions/core/lib/command.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@actions/core/lib/core.js":
-/*!************************************************!*\
-  !*** ./node_modules/@actions/core/lib/core.js ***!
-  \************************************************/
-/*! unknown exports (runtime-defined) */
-/*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:17-21 */
-/*! CommonJS bailout: this is used directly at 11:20-24 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-eval("\nvar __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {\n    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }\n    return new (P || (P = Promise))(function (resolve, reject) {\n        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }\n        function rejected(value) { try { step(generator[\"throw\"](value)); } catch (e) { reject(e); } }\n        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }\n        step((generator = generator.apply(thisArg, _arguments || [])).next());\n    });\n};\nvar __importStar = (this && this.__importStar) || function (mod) {\n    if (mod && mod.__esModule) return mod;\n    var result = {};\n    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];\n    result[\"default\"] = mod;\n    return result;\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nconst command_1 = __webpack_require__(/*! ./command */ \"./node_modules/@actions/core/lib/command.js\");\nconst file_command_1 = __webpack_require__(/*! ./file-command */ \"./node_modules/@actions/core/lib/file-command.js\");\nconst utils_1 = __webpack_require__(/*! ./utils */ \"./node_modules/@actions/core/lib/utils.js\");\nconst os = __importStar(__webpack_require__(/*! os */ \"os\"));\nconst path = __importStar(__webpack_require__(/*! path */ \"path\"));\n/**\n * The code to exit an action\n */\nvar ExitCode;\n(function (ExitCode) {\n    /**\n     * A code indicating that the action was successful\n     */\n    ExitCode[ExitCode[\"Success\"] = 0] = \"Success\";\n    /**\n     * A code indicating that the action was a failure\n     */\n    ExitCode[ExitCode[\"Failure\"] = 1] = \"Failure\";\n})(ExitCode = exports.ExitCode || (exports.ExitCode = {}));\n//-----------------------------------------------------------------------\n// Variables\n//-----------------------------------------------------------------------\n/**\n * Sets env variable for this action and future actions in the job\n * @param name the name of the variable to set\n * @param val the value of the variable. Non-string values will be converted to a string via JSON.stringify\n */\n// eslint-disable-next-line @typescript-eslint/no-explicit-any\nfunction exportVariable(name, val) {\n    const convertedVal = utils_1.toCommandValue(val);\n    process.env[name] = convertedVal;\n    const filePath = process.env['GITHUB_ENV'] || '';\n    if (filePath) {\n        const delimiter = '_GitHubActionsFileCommandDelimeter_';\n        const commandValue = `${name}<<${delimiter}${os.EOL}${convertedVal}${os.EOL}${delimiter}`;\n        file_command_1.issueCommand('ENV', commandValue);\n    }\n    else {\n        command_1.issueCommand('set-env', { name }, convertedVal);\n    }\n}\nexports.exportVariable = exportVariable;\n/**\n * Registers a secret which will get masked from logs\n * @param secret value of the secret\n */\nfunction setSecret(secret) {\n    command_1.issueCommand('add-mask', {}, secret);\n}\nexports.setSecret = setSecret;\n/**\n * Prepends inputPath to the PATH (for this action and future actions)\n * @param inputPath\n */\nfunction addPath(inputPath) {\n    const filePath = process.env['GITHUB_PATH'] || '';\n    if (filePath) {\n        file_command_1.issueCommand('PATH', inputPath);\n    }\n    else {\n        command_1.issueCommand('add-path', {}, inputPath);\n    }\n    process.env['PATH'] = `${inputPath}${path.delimiter}${process.env['PATH']}`;\n}\nexports.addPath = addPath;\n/**\n * Gets the value of an input.  The value is also trimmed.\n *\n * @param     name     name of the input to get\n * @param     options  optional. See InputOptions.\n * @returns   string\n */\nfunction getInput(name, options) {\n    const val = process.env[`INPUT_${name.replace(/ /g, '_').toUpperCase()}`] || '';\n    if (options && options.required && !val) {\n        throw new Error(`Input required and not supplied: ${name}`);\n    }\n    return val.trim();\n}\nexports.getInput = getInput;\n/**\n * Sets the value of an output.\n *\n * @param     name     name of the output to set\n * @param     value    value to store. Non-string values will be converted to a string via JSON.stringify\n */\n// eslint-disable-next-line @typescript-eslint/no-explicit-any\nfunction setOutput(name, value) {\n    command_1.issueCommand('set-output', { name }, value);\n}\nexports.setOutput = setOutput;\n/**\n * Enables or disables the echoing of commands into stdout for the rest of the step.\n * Echoing is disabled by default if ACTIONS_STEP_DEBUG is not set.\n *\n */\nfunction setCommandEcho(enabled) {\n    command_1.issue('echo', enabled ? 'on' : 'off');\n}\nexports.setCommandEcho = setCommandEcho;\n//-----------------------------------------------------------------------\n// Results\n//-----------------------------------------------------------------------\n/**\n * Sets the action status to failed.\n * When the action exits it will be with an exit code of 1\n * @param message add error issue message\n */\nfunction setFailed(message) {\n    process.exitCode = ExitCode.Failure;\n    error(message);\n}\nexports.setFailed = setFailed;\n//-----------------------------------------------------------------------\n// Logging Commands\n//-----------------------------------------------------------------------\n/**\n * Gets whether Actions Step Debug is on or not\n */\nfunction isDebug() {\n    return process.env['RUNNER_DEBUG'] === '1';\n}\nexports.isDebug = isDebug;\n/**\n * Writes debug message to user log\n * @param message debug message\n */\nfunction debug(message) {\n    command_1.issueCommand('debug', {}, message);\n}\nexports.debug = debug;\n/**\n * Adds an error issue\n * @param message error issue message. Errors will be converted to string via toString()\n */\nfunction error(message) {\n    command_1.issue('error', message instanceof Error ? message.toString() : message);\n}\nexports.error = error;\n/**\n * Adds an warning issue\n * @param message warning issue message. Errors will be converted to string via toString()\n */\nfunction warning(message) {\n    command_1.issue('warning', message instanceof Error ? message.toString() : message);\n}\nexports.warning = warning;\n/**\n * Writes info to log with console.log.\n * @param message info message\n */\nfunction info(message) {\n    process.stdout.write(message + os.EOL);\n}\nexports.info = info;\n/**\n * Begin an output group.\n *\n * Output until the next `groupEnd` will be foldable in this group\n *\n * @param name The name of the output group\n */\nfunction startGroup(name) {\n    command_1.issue('group', name);\n}\nexports.startGroup = startGroup;\n/**\n * End an output group.\n */\nfunction endGroup() {\n    command_1.issue('endgroup');\n}\nexports.endGroup = endGroup;\n/**\n * Wrap an asynchronous function call in a group.\n *\n * Returns the same type as the function itself.\n *\n * @param name The name of the group\n * @param fn The function to wrap in the group\n */\nfunction group(name, fn) {\n    return __awaiter(this, void 0, void 0, function* () {\n        startGroup(name);\n        let result;\n        try {\n            result = yield fn();\n        }\n        finally {\n            endGroup();\n        }\n        return result;\n    });\n}\nexports.group = group;\n//-----------------------------------------------------------------------\n// Wrapper action state\n//-----------------------------------------------------------------------\n/**\n * Saves state for current action, the state can only be retrieved by this action's post job execution.\n *\n * @param     name     name of the state to store\n * @param     value    value to store. Non-string values will be converted to a string via JSON.stringify\n */\n// eslint-disable-next-line @typescript-eslint/no-explicit-any\nfunction saveState(name, value) {\n    command_1.issueCommand('save-state', { name }, value);\n}\nexports.saveState = saveState;\n/**\n * Gets the value of an state set by this action's main execution.\n *\n * @param     name     name of the state to get\n * @returns   string\n */\nfunction getState(name) {\n    return process.env[`STATE_${name}`] || '';\n}\nexports.getState = getState;\n//# sourceMappingURL=core.js.map\n\n//# sourceURL=webpack://skip-workflow/./node_modules/@actions/core/lib/core.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@actions/core/lib/file-command.js":
-/*!********************************************************!*\
-  !*** ./node_modules/@actions/core/lib/file-command.js ***!
-  \********************************************************/
-/*! unknown exports (runtime-defined) */
-/*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 3:20-24 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n// For internal use, subject to change.\nvar __importStar = (this && this.__importStar) || function (mod) {\n    if (mod && mod.__esModule) return mod;\n    var result = {};\n    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];\n    result[\"default\"] = mod;\n    return result;\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n// We use any as a valid input type\n/* eslint-disable @typescript-eslint/no-explicit-any */\nconst fs = __importStar(__webpack_require__(/*! fs */ \"fs\"));\nconst os = __importStar(__webpack_require__(/*! os */ \"os\"));\nconst utils_1 = __webpack_require__(/*! ./utils */ \"./node_modules/@actions/core/lib/utils.js\");\nfunction issueCommand(command, message) {\n    const filePath = process.env[`GITHUB_${command}`];\n    if (!filePath) {\n        throw new Error(`Unable to find environment variable for file command ${command}`);\n    }\n    if (!fs.existsSync(filePath)) {\n        throw new Error(`Missing file at path: ${filePath}`);\n    }\n    fs.appendFileSync(filePath, `${utils_1.toCommandValue(message)}${os.EOL}`, {\n        encoding: 'utf8'\n    });\n}\nexports.issueCommand = issueCommand;\n//# sourceMappingURL=file-command.js.map\n\n//# sourceURL=webpack://skip-workflow/./node_modules/@actions/core/lib/file-command.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@actions/core/lib/utils.js":
-/*!*************************************************!*\
-  !*** ./node_modules/@actions/core/lib/utils.js ***!
-  \*************************************************/
-/*! flagged exports */
-/*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
-/*! export toCommandValue [provided] [no usage info] [missing usage info prevents renaming] */
-/*! other exports [not provided] [no usage info] */
-/*! runtime requirements: __webpack_exports__ */
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\n// We use any as a valid input type\n/* eslint-disable @typescript-eslint/no-explicit-any */\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n/**\n * Sanitizes an input into a string so it can be passed into issueCommand safely\n * @param input input to sanitize into a string\n */\nfunction toCommandValue(input) {\n    if (input === null || input === undefined) {\n        return '';\n    }\n    else if (typeof input === 'string' || input instanceof String) {\n        return input;\n    }\n    return JSON.stringify(input);\n}\nexports.toCommandValue = toCommandValue;\n//# sourceMappingURL=utils.js.map\n\n//# sourceURL=webpack://skip-workflow/./node_modules/@actions/core/lib/utils.js?");
-
-/***/ }),
-
 /***/ "./node_modules/@actions/github/lib/context.js":
 /*!*****************************************************!*\
   !*** ./node_modules/@actions/github/lib/context.js ***!
@@ -407,96 +348,33 @@ eval("var wrappy = __webpack_require__(/*! wrappy */ \"./node_modules/wrappy/wra
 
 /***/ }),
 
-/***/ "./src/config/index.ts":
-/*!*****************************!*\
-  !*** ./src/config/index.ts ***!
-  \*****************************/
-/*! flagged exports */
-/*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
-/*! export actionConfig [provided] [no usage info] [missing usage info prevents renaming] */
-/*! other exports [not provided] [no usage info] */
-/*! runtime requirements: __webpack_exports__ */
-/***/ ((__unused_webpack_module, exports) => {
+/***/ "./src/lib/checkHeadCommit.ts":
+/*!************************************!*\
+  !*** ./src/lib/checkHeadCommit.ts ***!
+  \************************************/
+/*! unknown exports (runtime-defined) */
+/*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:17-21 */
+/*! CommonJS bailout: this is used directly at 11:19-23 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.actionConfig = void 0;\nexports.actionConfig = {\n    PHRASE_TO_FIND_INPUT_ID: 'phrase',\n    GITHUB_TOKEN_ID: 'github-token',\n    REPO_TOKEN_ID: 'repo-token',\n    EXIT_CODES: {\n        SUCCESS: 0,\n        FAILURE: 1,\n        CANCELLED: 2,\n        SKIPPED: 3,\n    },\n};\n\n\n//# sourceURL=webpack://skip-workflow/./src/config/index.ts?");
+eval("\nvar __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {\n    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }\n    return new (P || (P = Promise))(function (resolve, reject) {\n        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }\n        function rejected(value) { try { step(generator[\"throw\"](value)); } catch (e) { reject(e); } }\n        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }\n        step((generator = generator.apply(thisArg, _arguments || [])).next());\n    });\n};\nvar __generator = (this && this.__generator) || function (thisArg, body) {\n    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;\n    return g = { next: verb(0), \"throw\": verb(1), \"return\": verb(2) }, typeof Symbol === \"function\" && (g[Symbol.iterator] = function() { return this; }), g;\n    function verb(n) { return function (v) { return step([n, v]); }; }\n    function step(op) {\n        if (f) throw new TypeError(\"Generator is already executing.\");\n        while (_) try {\n            if (f = 1, y && (t = op[0] & 2 ? y[\"return\"] : op[0] ? y[\"throw\"] || ((t = y[\"return\"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;\n            if (y = 0, t) op = [op[0] & 2, t.value];\n            switch (op[0]) {\n                case 0: case 1: t = op; break;\n                case 4: _.label++; return { value: op[1], done: false };\n                case 5: _.label++; y = op[1]; op = [0]; continue;\n                case 7: op = _.ops.pop(); _.trys.pop(); continue;\n                default:\n                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }\n                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }\n                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }\n                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }\n                    if (t[2]) _.ops.pop();\n                    _.trys.pop(); continue;\n            }\n            op = body.call(thisArg, _);\n        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }\n        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };\n    }\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.checkHeadCommit = void 0;\n/* eslint-disable camelcase */\nvar github_1 = __webpack_require__(/*! @actions/github */ \"./node_modules/@actions/github/lib/github.js\");\nexports.checkHeadCommit = function () { return __awaiter(void 0, void 0, void 0, function () {\n    var _a, githubToken, checkId, _b, owner, repo, _c, checks, actions, result;\n    return __generator(this, function (_d) {\n        switch (_d.label) {\n            case 0:\n                _a = github_1.context.payload.client_payload, githubToken = _a.githubToken, checkId = _a.checkId, _b = github_1.context.repo, owner = _b.owner, repo = _b.repo;\n                console.log({ githubToken: githubToken, checkId: checkId });\n                _c = github_1.getOctokit(githubToken), checks = _c.checks, actions = _c.actions;\n                return [4 /*yield*/, checks.update({\n                        check_run_id: checkId,\n                        owner: owner,\n                        repo: repo,\n                        conclusion: 'skipped',\n                    })];\n            case 1:\n                result = _d.sent();\n                console.log(result);\n                return [2 /*return*/];\n        }\n    });\n}); };\n\n\n//# sourceURL=webpack://skip-workflow/./src/lib/checkHeadCommit.ts?");
 
 /***/ }),
 
-/***/ "./src/lib/actionContext.ts":
-/*!**********************************!*\
-  !*** ./src/lib/actionContext.ts ***!
-  \**********************************/
+/***/ "./src/post.ts":
+/*!*********************!*\
+  !*** ./src/post.ts ***!
+  \*********************/
 /*! flagged exports */
 /*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
-/*! export getPrId [provided] [no usage info] [missing usage info prevents renaming] */
 /*! other exports [not provided] [no usage info] */
 /*! runtime requirements: __webpack_exports__, __webpack_require__ */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.getPrId = void 0;\nvar github_1 = __webpack_require__(/*! @actions/github */ \"./node_modules/@actions/github/lib/github.js\");\nexports.getPrId = function () {\n    var _a;\n    var prRef = github_1.context.ref;\n    var prIdRegex = /(?<=refs\\/pull\\/)\\d+(?=\\/merge)/i;\n    var prId = ((_a = prIdRegex.exec(prRef)) !== null && _a !== void 0 ? _a : [])[0];\n    if (!prId) {\n        throw new Error('❌ Error finding commit ID. Make sure this workflow is triggered by a \"pull_request\" event');\n    }\n    return Number(prId);\n};\n\n\n//# sourceURL=webpack://skip-workflow/./src/lib/actionContext.ts?");
-
-/***/ }),
-
-/***/ "./src/lib/getCommitMessages.ts":
-/*!**************************************!*\
-  !*** ./src/lib/getCommitMessages.ts ***!
-  \**************************************/
-/*! unknown exports (runtime-defined) */
-/*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:17-21 */
-/*! CommonJS bailout: this is used directly at 11:19-23 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-eval("\nvar __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {\n    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }\n    return new (P || (P = Promise))(function (resolve, reject) {\n        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }\n        function rejected(value) { try { step(generator[\"throw\"](value)); } catch (e) { reject(e); } }\n        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }\n        step((generator = generator.apply(thisArg, _arguments || [])).next());\n    });\n};\nvar __generator = (this && this.__generator) || function (thisArg, body) {\n    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;\n    return g = { next: verb(0), \"throw\": verb(1), \"return\": verb(2) }, typeof Symbol === \"function\" && (g[Symbol.iterator] = function() { return this; }), g;\n    function verb(n) { return function (v) { return step([n, v]); }; }\n    function step(op) {\n        if (f) throw new TypeError(\"Generator is already executing.\");\n        while (_) try {\n            if (f = 1, y && (t = op[0] & 2 ? y[\"return\"] : op[0] ? y[\"throw\"] || ((t = y[\"return\"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;\n            if (y = 0, t) op = [op[0] & 2, t.value];\n            switch (op[0]) {\n                case 0: case 1: t = op; break;\n                case 4: _.label++; return { value: op[1], done: false };\n                case 5: _.label++; y = op[1]; op = [0]; continue;\n                case 7: op = _.ops.pop(); _.trys.pop(); continue;\n                default:\n                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }\n                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }\n                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }\n                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }\n                    if (t[2]) _.ops.pop();\n                    _.trys.pop(); continue;\n            }\n            op = body.call(thisArg, _);\n        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }\n        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };\n    }\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.getCommitMessages = void 0;\nvar core_1 = __webpack_require__(/*! @actions/core */ \"./node_modules/@actions/core/lib/core.js\");\nvar github_1 = __webpack_require__(/*! @actions/github */ \"./node_modules/@actions/github/lib/github.js\");\nvar config_1 = __webpack_require__(/*! ../config */ \"./src/config/index.ts\");\nvar actionContext_1 = __webpack_require__(/*! ./actionContext */ \"./src/lib/actionContext.ts\");\nvar GITHUB_TOKEN_ID = config_1.actionConfig.GITHUB_TOKEN_ID;\nexports.getCommitMessages = function () { return __awaiter(void 0, void 0, void 0, function () {\n    var octokit, _a, owner, repo, prId, commits, error_1;\n    return __generator(this, function (_b) {\n        switch (_b.label) {\n            case 0:\n                _b.trys.push([0, 2, , 3]);\n                octokit = github_1.getOctokit(core_1.getInput(GITHUB_TOKEN_ID));\n                _a = github_1.context.repo, owner = _a.owner, repo = _a.repo;\n                prId = actionContext_1.getPrId();\n                return [4 /*yield*/, octokit.pulls.listCommits({\n                        pull_number: prId,\n                        owner: owner,\n                        repo: repo,\n                    })];\n            case 1:\n                commits = (_b.sent()).data;\n                return [2 /*return*/, commits.map(function (_a) {\n                        var commit = _a.commit;\n                        return commit.message;\n                    })];\n            case 2:\n                error_1 = _b.sent();\n                throw new Error('❌ Error getting commit message. Make sure you provided GITHUB_TOKEN input and are authorized to run this workflow');\n            case 3: return [2 /*return*/];\n        }\n    });\n}); };\n\n\n//# sourceURL=webpack://skip-workflow/./src/lib/getCommitMessages.ts?");
-
-/***/ }),
-
-/***/ "./src/lib/searchCommitMessages.ts":
-/*!*****************************************!*\
-  !*** ./src/lib/searchCommitMessages.ts ***!
-  \*****************************************/
-/*! flagged exports */
-/*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
-/*! export searchCommitMessages [provided] [no usage info] [missing usage info prevents renaming] */
-/*! other exports [not provided] [no usage info] */
-/*! runtime requirements: __webpack_exports__ */
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.searchCommitMessages = void 0;\nexports.searchCommitMessages = function (commitMessages, stringToFind) {\n    return commitMessages.find(function (message) {\n        return message.match(new RegExp(stringToFind, 'i'));\n    });\n};\n\n\n//# sourceURL=webpack://skip-workflow/./src/lib/searchCommitMessages.ts?");
-
-/***/ }),
-
-/***/ "./src/lib/skipWorkflow.ts":
-/*!*********************************!*\
-  !*** ./src/lib/skipWorkflow.ts ***!
-  \*********************************/
-/*! unknown exports (runtime-defined) */
-/*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:17-21 */
-/*! CommonJS bailout: this is used directly at 11:19-23 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-eval("\nvar __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {\n    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }\n    return new (P || (P = Promise))(function (resolve, reject) {\n        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }\n        function rejected(value) { try { step(generator[\"throw\"](value)); } catch (e) { reject(e); } }\n        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }\n        step((generator = generator.apply(thisArg, _arguments || [])).next());\n    });\n};\nvar __generator = (this && this.__generator) || function (thisArg, body) {\n    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;\n    return g = { next: verb(0), \"throw\": verb(1), \"return\": verb(2) }, typeof Symbol === \"function\" && (g[Symbol.iterator] = function() { return this; }), g;\n    function verb(n) { return function (v) { return step([n, v]); }; }\n    function step(op) {\n        if (f) throw new TypeError(\"Generator is already executing.\");\n        while (_) try {\n            if (f = 1, y && (t = op[0] & 2 ? y[\"return\"] : op[0] ? y[\"throw\"] || ((t = y[\"return\"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;\n            if (y = 0, t) op = [op[0] & 2, t.value];\n            switch (op[0]) {\n                case 0: case 1: t = op; break;\n                case 4: _.label++; return { value: op[1], done: false };\n                case 5: _.label++; y = op[1]; op = [0]; continue;\n                case 7: op = _.ops.pop(); _.trys.pop(); continue;\n                default:\n                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }\n                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }\n                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }\n                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }\n                    if (t[2]) _.ops.pop();\n                    _.trys.pop(); continue;\n            }\n            op = body.call(thisArg, _);\n        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }\n        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };\n    }\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.skipWorkflow = void 0;\n/* eslint-disable camelcase */\nvar core_1 = __webpack_require__(/*! @actions/core */ \"./node_modules/@actions/core/lib/core.js\");\nvar github_1 = __webpack_require__(/*! @actions/github */ \"./node_modules/@actions/github/lib/github.js\");\nvar config_1 = __webpack_require__(/*! ../config */ \"./src/config/index.ts\");\nexports.skipWorkflow = function () { return __awaiter(void 0, void 0, void 0, function () {\n    var githubToken, _a, repos, checks, _b, owner, repo, pull_request, sha, result1, checkId, result;\n    return __generator(this, function (_c) {\n        switch (_c.label) {\n            case 0:\n                githubToken = core_1.getInput(config_1.actionConfig.REPO_TOKEN_ID);\n                console.log(githubToken);\n                _a = github_1.getOctokit(githubToken), repos = _a.repos, checks = _a.checks;\n                _b = github_1.context.repo, owner = _b.owner, repo = _b.repo, pull_request = github_1.context.payload.pull_request;\n                sha = pull_request.head.sha;\n                return [4 /*yield*/, checks.listForRef({\n                        owner: owner,\n                        repo: repo,\n                        ref: sha,\n                        status: 'in_progress',\n                    })];\n            case 1:\n                result1 = _c.sent();\n                checkId = result1.data.check_runs[0].id;\n                return [4 /*yield*/, repos.createDispatchEvent({\n                        event_type: 'skip-workflow',\n                        owner: owner,\n                        repo: repo,\n                        client_payload: { githubToken: githubToken, checkId: checkId },\n                    })];\n            case 2:\n                result = _c.sent();\n                console.log(result);\n                return [2 /*return*/];\n        }\n    });\n}); };\n\n\n//# sourceURL=webpack://skip-workflow/./src/lib/skipWorkflow.ts?");
-
-/***/ }),
-
-/***/ "./src/main.ts":
-/*!*********************!*\
-  !*** ./src/main.ts ***!
-  \*********************/
-/*! unknown exports (runtime-defined) */
-/*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:17-21 */
-/*! CommonJS bailout: this is used directly at 11:19-23 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-eval("\nvar __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {\n    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }\n    return new (P || (P = Promise))(function (resolve, reject) {\n        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }\n        function rejected(value) { try { step(generator[\"throw\"](value)); } catch (e) { reject(e); } }\n        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }\n        step((generator = generator.apply(thisArg, _arguments || [])).next());\n    });\n};\nvar __generator = (this && this.__generator) || function (thisArg, body) {\n    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;\n    return g = { next: verb(0), \"throw\": verb(1), \"return\": verb(2) }, typeof Symbol === \"function\" && (g[Symbol.iterator] = function() { return this; }), g;\n    function verb(n) { return function (v) { return step([n, v]); }; }\n    function step(op) {\n        if (f) throw new TypeError(\"Generator is already executing.\");\n        while (_) try {\n            if (f = 1, y && (t = op[0] & 2 ? y[\"return\"] : op[0] ? y[\"throw\"] || ((t = y[\"return\"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;\n            if (y = 0, t) op = [op[0] & 2, t.value];\n            switch (op[0]) {\n                case 0: case 1: t = op; break;\n                case 4: _.label++; return { value: op[1], done: false };\n                case 5: _.label++; y = op[1]; op = [0]; continue;\n                case 7: op = _.ops.pop(); _.trys.pop(); continue;\n                default:\n                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }\n                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }\n                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }\n                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }\n                    if (t[2]) _.ops.pop();\n                    _.trys.pop(); continue;\n            }\n            op = body.call(thisArg, _);\n        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }\n        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };\n    }\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nvar core_1 = __webpack_require__(/*! @actions/core */ \"./node_modules/@actions/core/lib/core.js\");\nvar getCommitMessages_1 = __webpack_require__(/*! ./lib/getCommitMessages */ \"./src/lib/getCommitMessages.ts\");\nvar searchCommitMessages_1 = __webpack_require__(/*! ./lib/searchCommitMessages */ \"./src/lib/searchCommitMessages.ts\");\n// import { skipWorkflow } from './lib/skipWorkflow';\nvar config_1 = __webpack_require__(/*! ./config */ \"./src/config/index.ts\");\nvar skipWorkflow_1 = __webpack_require__(/*! ./lib/skipWorkflow */ \"./src/lib/skipWorkflow.ts\");\nvar main = function (inputId) { return __awaiter(void 0, void 0, void 0, function () {\n    var phraseToFind, commitMessages, foundCommit, error_1;\n    return __generator(this, function (_a) {\n        switch (_a.label) {\n            case 0:\n                _a.trys.push([0, 2, , 3]);\n                phraseToFind = core_1.getInput(inputId);\n                return [4 /*yield*/, getCommitMessages_1.getCommitMessages()];\n            case 1:\n                commitMessages = _a.sent();\n                console.log(\"\\uD83D\\uDD0E Searching all commit messages for \\\"\" + phraseToFind + \"\\\"...\");\n                foundCommit = searchCommitMessages_1.searchCommitMessages(commitMessages, phraseToFind);\n                if (foundCommit) {\n                    console.log(\"\\u23ED \\\"\" + phraseToFind + \"\\\" found in \\\"\" + foundCommit + \"\\\". Skipping workflow...\");\n                    skipWorkflow_1.skipWorkflow();\n                    core_1.setOutput('match', true);\n                }\n                else {\n                    console.log(\"\\u2714 \\\"\" + phraseToFind + \"\\\" not found in commit messages. Continuing workflow...\");\n                }\n                return [3 /*break*/, 3];\n            case 2:\n                error_1 = _a.sent();\n                core_1.setOutput('match', false);\n                return [3 /*break*/, 3];\n            case 3: return [2 /*return*/];\n        }\n    });\n}); };\nmain(config_1.actionConfig.PHRASE_TO_FIND_INPUT_ID);\n\n\n//# sourceURL=webpack://skip-workflow/./src/main.ts?");
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nvar checkHeadCommit_1 = __webpack_require__(/*! ./lib/checkHeadCommit */ \"./src/lib/checkHeadCommit.ts\");\nvar post = function () {\n    checkHeadCommit_1.checkHeadCommit();\n};\npost();\n\n\n//# sourceURL=webpack://skip-workflow/./src/post.ts?");
 
 /***/ }),
 
@@ -663,20 +541,6 @@ eval("module.exports = require(\"os\");;\n\n//# sourceURL=webpack://skip-workflo
 
 /***/ }),
 
-/***/ "path":
-/*!***********************!*\
-  !*** external "path" ***!
-  \***********************/
-/*! dynamic exports */
-/*! exports [maybe provided (runtime-defined)] [no usage info] */
-/*! runtime requirements: module */
-/***/ ((module) => {
-
-"use strict";
-eval("module.exports = require(\"path\");;\n\n//# sourceURL=webpack://skip-workflow/external_%22path%22?");
-
-/***/ }),
-
 /***/ "stream":
 /*!*************************!*\
   !*** external "stream" ***!
@@ -816,7 +680,7 @@ eval("module.exports = require(\"zlib\");;\n\n//# sourceURL=webpack://skip-workf
 /************************************************************************/
 /******/ 	// startup
 /******/ 	// Load entry module
-/******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	__webpack_require__("./src/main.ts");
+/******/ 	__webpack_require__("./src/post.ts");
+/******/ 	// This entry module used 'exports' so it can't be inlined
 /******/ })()
 ;
