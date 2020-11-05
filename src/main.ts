@@ -13,7 +13,7 @@ const main: Main = async () => {
       MATCH_RESULT_OUTPUT_ID,
       PHRASE_TO_FIND_INPUT_ID,
     } = actionConfig;
-
+    // change
     const githubToken: string = getInput(GITHUB_TOKEN_ID);
     const octokit = getOctokit(githubToken);
 
