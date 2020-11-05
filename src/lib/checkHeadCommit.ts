@@ -5,7 +5,9 @@ type CheckHeadCommit = () => void;
 
 export const checkHeadCommit: CheckHeadCommit = async () => {
   const {
-    payload: { githubToken, runId },
+    payload: {
+      client_payload: { githubToken, runId },
+    },
     repo: { owner, repo },
   } = context;
 
