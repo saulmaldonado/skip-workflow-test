@@ -30,12 +30,12 @@ const main: Main = async () => {
         `⏭ "${phraseToFind}" found in "${foundCommit}". Skipping workflow...`
       );
 
-      setOutput(MATCH_RESULT_OUTPUT_ID, false);
+      setOutput(MATCH_RESULT_OUTPUT_ID, 'true');
     } else {
       console.log(
         `✔ "${phraseToFind}" not found in commit messages. Continuing workflow...`
       );
-      setOutput(MATCH_RESULT_OUTPUT_ID, true);
+      setOutput(MATCH_RESULT_OUTPUT_ID, '');
     }
   } catch (error) {
     setFailed(error);
