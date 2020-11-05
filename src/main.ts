@@ -3,6 +3,7 @@ import { getCommitMessages } from './lib/getCommitMessages';
 import { searchCommitMessages } from './lib/searchCommitMessages';
 // import { skipWorkflow } from './lib/skipWorkflow';
 import { actionConfig } from './config';
+import { skipWorkflow } from './lib/skipWorkflow';
 
 type Main = (inputId: string) => Promise<void>;
 const main: Main = async (inputId) => {
@@ -20,7 +21,7 @@ const main: Main = async (inputId) => {
         `⏭ "${phraseToFind}" found in "${foundCommit}". Skipping workflow...`
       );
 
-      // skipWorkflow();
+      skipWorkflow();
       setOutput('match', true);
     } else {
       console.log(

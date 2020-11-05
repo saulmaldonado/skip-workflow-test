@@ -1,16 +1,13 @@
 /* eslint-disable camelcase */
 import { context } from '@actions/github';
 
-type CheckHeadCommit = () => Promise<string | never>;
+type CheckHeadCommit = () => void;
 
 export const checkHeadCommit: CheckHeadCommit = async () => {
-  const {
-    payload: { pull_request },
-  } = context;
+  const { payload } = context;
 
-  const {
-    head: { sha },
-  } = pull_request!;
+  // const { githubToken } = payload;
 
-  return sha;
+  // const {} = getOctokit(githubToken);
+  console.log(payload);
 };
