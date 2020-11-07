@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     name: check commit
     outputs:
-      match: ${{ steps.skip-workflow.outputs.match }}
+      skip-job: ${{ steps.skip-workflow.outputs.skip-job }}
     steps:
       - uses: actions/checkout@v2
       - name: skip-workflow
@@ -16,7 +16,17 @@ jobs:
 
   test-action:
     needs: check-commit
-    if: ${{ needs.check-commit.outputs.match }}
+    if: ${{ !needs.check-commit.outputs.skip-job }}
+    runs-on: ubuntu-latest
+    name: A job to say hello
+    steps:
+      - name: test command
+        run: yarn test
+      - name: test command 2
+        run: yarn test
+  test-action2:
+    needs: check-commit
+    if: ${{ !needs.check-commit.outputs.skip-job }}
     runs-on: ubuntu-latest
     name: A job to say hello
     steps:
