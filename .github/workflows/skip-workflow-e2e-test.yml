@@ -1,0 +1,47 @@
+name: skip-workflow-e2e-test
+
+on:
+  pull_request:
+    branches: 
+      - main
+
+jobs:
+  skip-workflow-test:
+    runs-on: ubuntu-latest
+    outputs:
+      skip-job: ${{ steps.skip-workflow-test.outputs.match-found }}
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        repository: saulmaldonado/skip-workflow
+
+    - name: test-action
+      id: skip-workflow-test
+      
+      uses: ./
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        phrase: '[skip-workflow]'
+  
+  test-action:
+    needs: skip-workflow-test
+    
+    if: ${{ !needs.skip-workflow.outputs.match-found }}
+    runs-on: ubuntu-latest
+    name: test-job-1
+    steps:
+      - name: this-command-should-not-run
+        run: exit 1
+  
+  test-action-2:
+    needs: skip-workflow-test
+
+    if: ${{ !needs.skip-workflow.outputs.match-found }}
+    runs-on: ubuntu-latest
+    name: test-job-2
+    steps:
+      - name: this-command-should-not-run-2
+        run: exit 1
+
+      
