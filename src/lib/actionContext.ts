@@ -3,6 +3,7 @@ import { Context } from '@actions/github/lib/context';
 type GetPrId = (context: Context) => number;
 export const getPrId: GetPrId = (context) => {
   const { ref: prRef } = context;
+  console.log(prRef);
   const prIdRegex: RegExp = /(?<=refs\/pull\/)\d+(?=\/merge)/i;
 
   const [prId] = prIdRegex.exec(prRef) ?? [];

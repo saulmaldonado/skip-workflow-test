@@ -1,5 +1,10 @@
-on: [pull_request]
-
+on:
+  pull_request_target:
+    branches:
+      - main
+  push:
+    branches:
+      - main
 jobs:
   check-commit:
     runs-on: ubuntu-latest
