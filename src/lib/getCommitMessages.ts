@@ -11,25 +11,19 @@ export const getCommitMessages: GetCommitMessages = async (
   octokit,
   context
 ) => {
-  try {
-    const { pulls } = octokit;
+  const { pulls } = octokit;
 
-    const {
-      repo: { owner, repo },
-    } = context;
+  const {
+    repo: { owner, repo },
+  } = context;
 
-    const prId: number = getPrId(context);
+  const prId: number = getPrId(context);
 
-    const { data: commits } = await pulls.listCommits({
-      pull_number: prId,
-      owner,
-      repo,
-    });
+  const { data: commits } = await pulls.listCommits({
+    pull_number: prId,
+    owner,
+    repo,
+  });
 
-    return commits.map(({ commit }) => commit.message);
-  } catch (error) {
-    throw new Error(
-      '❌ Error getting commit message. Make sure you provided GITHUB_TOKEN input and are authorized to run this workflow'
-    );
-  }
+  return commits.map(({ commit }) => commit.message);
 };
