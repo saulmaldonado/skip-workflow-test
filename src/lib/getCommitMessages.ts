@@ -15,7 +15,10 @@ export const getCommitMessages: GetCommitMessages = async (
 
   const {
     repo: { owner, repo },
+    eventName,
   } = context;
+
+  console.log(eventName);
 
   const prId: number = getPrId(context);
 
